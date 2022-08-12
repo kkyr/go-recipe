@@ -1,0 +1,38 @@
+linters:
+  enable-all: true
+  disable:
+    - errorlint
+    - exhaustivestruct
+    - exhaustruct
+    - gci
+    - gochecknoglobals
+    - goerr113
+    - gofumpt
+    - gomnd
+    - ireturn
+    - nlreturn
+    - noctx
+    - nosnakecase
+    - testpackage
+    - varnamelen
+    - wrapcheck
+
+issues:
+  exclude-rules:
+    - path: internal/scrape/custom/*
+      linters:
+        - dupl
+    - path: internal/scrape/test/scraper.go
+      linters:
+        - funlen
+    - path: _test\.go
+      linters:
+        - cyclop
+        - funlen
+        - lll
+        - paralleltest
+        - scopelint
+    - path: doc\.go
+      linters:
+        - lll
+        - typecheck
