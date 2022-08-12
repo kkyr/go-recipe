@@ -24,7 +24,7 @@ And use it in code:
 ```go
 package main
 
-import "go-recipe/pkg/recipe"
+import "github.com/kkyr/go-recipe/pkg/recipe"
 
 func main() {
   url := "https://minimalistbaker.com/quick-pickled-jalapenos/"

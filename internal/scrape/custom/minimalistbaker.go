@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	recipe "go-recipe"
-	"go-recipe/internal/scrape/schema"
+	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/scrape/schema"
 
 	"github.com/PuerkitoBio/goquery"
 )

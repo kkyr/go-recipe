@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strconv"
 
-	recipe "go-recipe"
+	"github.com/kkyr/go-recipe"
 )
 
 var matchFirstNumber = regexp.MustCompile(`(\d*[.])?\d+`)

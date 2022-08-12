@@ -2,12 +2,12 @@ package custom
 
 import (
 	"fmt"
-	stringsUtil "go-recipe/internal/html"
 	"strings"
 	"time"
 
-	recipe "go-recipe"
-	"go-recipe/internal/scrape/schema"
+	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/html"
+	"github.com/kkyr/go-recipe/internal/scrape/schema"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -35,7 +35,7 @@ func (m *ForksOverKnivesScraper) Author() (string, bool) {
 		return sel.Text()
 	})
 	if len(ss) > 0 {
-		return stringsUtil.CleanString(ss[0]), true
+		return html.CleanString(ss[0]), true
 	}
 
 	return m.schema.Author()
@@ -98,7 +98,7 @@ func (m *ForksOverKnivesScraper) Yields() (string, bool) {
 		return sel.Siblings().First().Text()
 	})
 	if len(ss) > 0 {
-		return strings.TrimPrefix(stringsUtil.CleanString(ss[0]), "Makes "), true
+		return strings.TrimPrefix(html.CleanString(ss[0]), "Makes "), true
 	}
 
 	return m.schema.Yields()

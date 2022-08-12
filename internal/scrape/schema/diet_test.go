@@ -1,10 +1,10 @@
 package schema_test
 
 import (
-	"go-recipe/internal/scrape/schema"
 	"testing"
 
-	recipe "go-recipe"
+	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/scrape/schema"
 )
 
 func TestParseDiet(t *testing.T) {

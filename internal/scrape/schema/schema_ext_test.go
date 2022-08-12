@@ -1,13 +1,13 @@
 package schema_test
 
 import (
-	"go-recipe/internal/scrape/schema"
 	"os"
 	"testing"
 	"time"
 
-	recipe "go-recipe"
-	"go-recipe/internal/scrape/test"
+	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/scrape/schema"
+	"github.com/kkyr/go-recipe/internal/scrape/test"
 
 	"github.com/PuerkitoBio/goquery"
 )

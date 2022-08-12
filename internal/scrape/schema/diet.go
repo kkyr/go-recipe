@@ -3,7 +3,7 @@ package schema
 import (
 	"strings"
 
-	recipe "go-recipe"
+	"github.com/kkyr/go-recipe"
 )
 
 // ParseDiet parses a restricted diet (https://schema.org/RestrictedDiet) string into

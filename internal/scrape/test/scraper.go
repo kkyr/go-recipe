@@ -7,10 +7,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/kkyr/go-recipe"
+
 	"github.com/PuerkitoBio/goquery"
-
-	recipe "go-recipe"
-
 	"github.com/google/go-cmp/cmp"
 )
 

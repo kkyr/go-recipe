@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	recipe "go-recipe"
-	"go-recipe/internal/scrape/test"
+	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/scrape/test"
 )
 
 func TestMinimalistBakerScraper(t *testing.T) {

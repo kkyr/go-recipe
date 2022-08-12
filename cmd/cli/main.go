@@ -3,7 +3,8 @@ package main
 
 import (
 	"fmt"
-	"go-recipe/pkg/recipe"
+
+	"github.com/kkyr/go-recipe/pkg/recipe"
 )
 
 const (

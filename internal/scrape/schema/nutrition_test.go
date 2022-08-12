@@ -1,8 +1,9 @@
 package schema_test
 
 import (
-	"go-recipe/internal/scrape/schema"
 	"testing"
+
+	"github.com/kkyr/go-recipe/internal/scrape/schema"
 )
 
 func TestParseNutritionalInformation(t *testing.T) {

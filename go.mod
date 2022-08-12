@@ -1,4 +1,4 @@
-module go-recipe
+module github.com/kkyr/go-recipe
 
 go 1.19
 

@@ -3,7 +3,7 @@ package url_test
 import (
 	"testing"
 
-	"go-recipe/internal/url"
+	"github.com/kkyr/go-recipe/internal/url"
 )
 
 func TestGetHost(t *testing.T) {

@@ -2,12 +2,12 @@ package schema
 
 import (
 	"fmt"
-	"go-recipe/internal/scrape/test"
 	"strings"
 	"testing"
 	"time"
 
-	recipe "go-recipe"
+	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/scrape/test"
 )
 
 func TestRecipeScraper_Author(t *testing.T) {

@@ -1,11 +1,11 @@
 package custom
 
 import (
-	recipe "go-recipe"
 	"testing"
 	"time"
 
-	"go-recipe/internal/scrape/test"
+	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/scrape/test"
 )
 
 func TestForksOverKnivesScraper(t *testing.T) {

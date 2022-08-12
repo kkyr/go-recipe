@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"time"
 
-	recipe "go-recipe"
-	"go-recipe/internal/scrape/schema"
+	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/scrape/schema"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -98,8 +98,8 @@ import (
 	"testing"
 	"time"
 
-	recipe "go-recipe"
-	"go-recipe/internal/scrape/test"
+	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/scrape/test"
 )
 
 func Test{{.domain}}Scraper(t *testing.T) {

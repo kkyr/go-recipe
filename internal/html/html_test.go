@@ -1,9 +1,9 @@
 package html_test
 
 import (
-	"go-recipe/internal/html"
-
 	"testing"
+
+	"github.com/kkyr/go-recipe/internal/html"
 )
 
 func TestCleanString(t *testing.T) {

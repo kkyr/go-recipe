@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	"go-recipe/internal/scrape/custom"
-	"go-recipe/internal/scrape/schema"
-	"go-recipe/internal/scrape/test"
+	"github.com/kkyr/go-recipe/internal/scrape/custom"
+	"github.com/kkyr/go-recipe/internal/scrape/schema"
+	"github.com/kkyr/go-recipe/internal/scrape/test"
 )
 
 type mockHTTPClient struct {

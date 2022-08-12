@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"fmt"
 
-	recipe "go-recipe"
-	"go-recipe/internal/http"
-	"go-recipe/internal/scrape/schema"
-	urlutil "go-recipe/internal/url"
+	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/http"
+	"github.com/kkyr/go-recipe/internal/scrape/schema"
+	urlutil "github.com/kkyr/go-recipe/internal/url"
 
 	"github.com/PuerkitoBio/goquery"
 )
