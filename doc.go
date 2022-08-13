@@ -4,7 +4,7 @@
 //
 // Therefore, this package allows custom scrapers to be defined which contain customized scraping logic for each website. The custom scrapers can also use the default scraper in a "hybrid mode" so that custom scraping logic only needs to be defined for those fields which the default scraper could not pick anything up.
 //
-// The custom scrapers are registered in [pkg/recipe/scrapers.go](/pkg/recipe/scrapers.go) and are identified by the host name of the website for which they are defined. go-recipe makes use of this host name mapping when picking a scraper to use for the given url. In other words, which scraper will be used by the package is an implicit decision based on the host of the target website and, of course, based on the custom scrapers that are available.
+// The custom scrapers are registered in [github.com/kkyr/go-recipe/pkg/recipe/scrapers.go] and are identified by the host name of the website for which they are defined. go-recipe makes use of this host name mapping when picking a scraper to use for the given url. In other words, which scraper will be used by the package is an implicit decision based on the host of the target website and, of course, based on the custom scrapers that are available.
 //
 // # Example
 //
