@@ -19,10 +19,13 @@ linters:
 
 issues:
   exclude-rules:
-    - path: internal/scrape/custom/*
+    - path: cmd/scrapergen/main.go
+      linters:
+        - funlen
+    - path: internal/scraper/custom/*
       linters:
         - dupl
-    - path: internal/scrape/test/scraper.go
+    - path: internal/scraper/test/scraper.go
       linters:
         - funlen
     - path: _test\.go

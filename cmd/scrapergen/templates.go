@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/kkyr/go-recipe"
-	"github.com/kkyr/go-recipe/internal/scrape/schema"
+	"github.com/kkyr/go-recipe/internal/scraper/schema"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -99,7 +99,7 @@ import (
 	"time"
 
 	"github.com/kkyr/go-recipe"
-	"github.com/kkyr/go-recipe/internal/scrape/test"
+	"github.com/kkyr/go-recipe/internal/scraper/test"
 )
 
 func Test{{.domain}}Scraper(t *testing.T) {

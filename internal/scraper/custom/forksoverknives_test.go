@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/kkyr/go-recipe"
-	"github.com/kkyr/go-recipe/internal/scrape/test"
+	"github.com/kkyr/go-recipe/internal/scraper/test"
 )
 
 func TestForksOverKnivesScraper(t *testing.T) {

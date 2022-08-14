@@ -71,9 +71,9 @@ _(replace the domain and link with your own)_
 The sample command above would generate the following files:
 
 ```shell
-go-recipe/internal/scrape/custom/copykat.go
-go-recipe/internal/scrape/custom/copykat_test.go
-go-recipe/internal/scrape/custom/testdata/copykat.com.html
+go-recipe/internal/scraper/custom/copykat.go
+go-recipe/internal/scraper/custom/copykat_test.go
+go-recipe/internal/scraper/custom/testdata/copykat.com.html
 ```
 
 The generator can't do everything (at least not yet), so there's some final touches that you must put in:
@@ -86,7 +86,7 @@ You should now be ready to send a PR!
 
 ### Roadmap
 
-- [ ] Add `scrapergen` unit tests.
+- [ ] Refactor `scrapergen` and add unit tests.
 - [ ] Modify `scrapergen` so that it also adds the new scraper to the `hostToScraper` map.
 - [ ] Add option for user to specify http client timeout.
 - [ ] Add option for user to specify "strict" mode: in this mode only custom scrapers will be used if defined, otherwise fail.

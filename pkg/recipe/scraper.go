@@ -6,7 +6,7 @@ import (
 
 	"github.com/kkyr/go-recipe"
 	"github.com/kkyr/go-recipe/internal/http"
-	"github.com/kkyr/go-recipe/internal/scrape/schema"
+	"github.com/kkyr/go-recipe/internal/scraper/schema"
 	urlutil "github.com/kkyr/go-recipe/internal/url"
 
 	"github.com/PuerkitoBio/goquery"

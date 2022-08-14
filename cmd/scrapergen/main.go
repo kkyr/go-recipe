@@ -16,7 +16,7 @@ import (
 
 	"github.com/kkyr/go-recipe"
 	"github.com/kkyr/go-recipe/internal/http"
-	"github.com/kkyr/go-recipe/internal/scrape/schema"
+	"github.com/kkyr/go-recipe/internal/scraper/schema"
 	urlutil "github.com/kkyr/go-recipe/internal/url"
 
 	"github.com/PuerkitoBio/goquery"
@@ -55,24 +55,21 @@ func run(domain, url string) {
 
 	dir, err := getScrapersDir()
 	if err != nil {
-		log.Fatalf("ERROR: failed to get scrapers directory: %v\nAre you running this from the go-recipe module?", err)
+		log.Fatalf("ERROR: failed to get scrapers directory: %v\nMake sure you run this cmd from the go-recipe module", err)
 	}
 
-	log.Printf("DEBUG: using scrapers directory %s", dir)
-	log.Printf("DEBUG: retrieving HTML body from %s", url)
+	log.Printf("DEBUG: using scrapers directory %q", dir)
 
 	body, err := http.NewClient().Get(url)
 	if err != nil {
 		log.Fatalf("ERROR: failed to GET url: %v", err)
 	}
 
-	log.Printf("DEBUG: retrieving recipe data to use in test file")
-
 	data, err := getRecipeData(body)
 	if err != nil {
-		log.Printf("WARN: could not get recipe data to prefill test: %v", err)
-
 		data = make(map[string]any)
+
+		log.Printf("WARN: could not get recipe data to prefill test: %v", err)
 	}
 
 	data["domain"] = domain
@@ -89,6 +86,29 @@ func run(domain, url string) {
 	if err := createTestDataFile(dir, host, body); err != nil {
 		log.Fatalf("ERROR: unable to create test data file: %v", err)
 	}
+}
+
+func getScrapersDir() (string, error) {
+	root, err := getModuleRoot()
+	if err != nil {
+		return "", fmt.Errorf("could not get module root: %w", err)
+	}
+
+	return filepath.Join(root, "internal", "scraper", "custom"), nil
+}
+
+func getRecipeData(body []byte) (map[string]any, error) {
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(body))
+	if err != nil {
+		return nil, fmt.Errorf("could not create document: %v", err)
+	}
+
+	scraper, err := schema.GetRecipeScraper(doc)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create recipe scraper: %v", err)
+	}
+
+	return scraperToMap(scraper), nil
 }
 
 func createScraperFile(dir string, name string, data map[string]any) error {
@@ -163,15 +183,6 @@ func getTestDataFilePath(dir string, name string) string {
 	return filepath.Join(dir, "testdata", file)
 }
 
-func getScrapersDir() (string, error) {
-	root, err := getModuleRoot()
-	if err != nil {
-		return "", fmt.Errorf("could not get module root: %w", err)
-	}
-
-	return filepath.Join(root, "internal", "scrape", "custom"), nil
-}
-
 func getModuleRoot() (string, error) {
 	cmd := exec.Command("go", "env", "GOMOD")
 
@@ -186,20 +197,6 @@ func getModuleRoot() (string, error) {
 	dir := filepath.Dir(path)
 
 	return dir, nil
-}
-
-func getRecipeData(body []byte) (map[string]any, error) {
-	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(body))
-	if err != nil {
-		return nil, fmt.Errorf("could not create document: %v", err)
-	}
-
-	scraper, err := schema.GetRecipeScraper(doc)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create recipe scraper: %v", err)
-	}
-
-	return scraperToMap(scraper), nil
 }
 
 func scraperToMap(scraper *schema.RecipeScraper) map[string]any {

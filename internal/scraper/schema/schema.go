@@ -7,7 +7,7 @@ import (
 
 	"github.com/kkyr/go-recipe"
 	"github.com/kkyr/go-recipe/internal/html"
-	ld "github.com/kkyr/go-recipe/internal/scrape/schema/json-ld"
+	ld "github.com/kkyr/go-recipe/internal/scraper/schema/json-ld"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/senseyeio/duration"

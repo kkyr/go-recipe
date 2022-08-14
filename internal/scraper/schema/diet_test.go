@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/kkyr/go-recipe"
-	"github.com/kkyr/go-recipe/internal/scrape/schema"
+	"github.com/kkyr/go-recipe/internal/scraper/schema"
 )
 
 func TestParseDiet(t *testing.T) {
