@@ -30,7 +30,7 @@ import "github.com/kkyr/go-recipe/pkg/recipe"
 func main() {
   url := "https://minimalistbaker.com/quick-pickled-jalapenos/"
 	
-  scraper, err := recipe.Scraper(url)
+  scraper, err := recipe.ScrapeFrom(url)
   if err != nil {
 	panic(err)
   }

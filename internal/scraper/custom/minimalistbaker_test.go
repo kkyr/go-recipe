@@ -1,17 +1,18 @@
-package custom
+package custom_test
 
 import (
 	"testing"
 	"time"
 
 	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/scraper/custom"
 	"github.com/kkyr/go-recipe/internal/scraper/test"
 )
 
-func TestMinimalistBakerScraper(t *testing.T) {
-	doc := test.ReadHTMLFileOrFail(t, MinimalistBakerHost)
+func TestNewMinimalistBakerScraper(t *testing.T) {
+	doc := test.ReadHTMLFileOrFail(t, custom.MinimalistBakerHost)
 
-	scraper, err := NewMinimalistBakerScraper(doc)
+	scraper, err := custom.NewMinimalistBakerScraper(doc)
 	if err != nil {
 		t.Fatalf("unexpected err while initializing scraper: %v", err)
 	}

@@ -62,7 +62,7 @@ func (rp *RecipeProcessor) GetRecipeNode(doc *goquery.Document) (map[string]any,
 func (rp *RecipeProcessor) parseJSON(data string) (map[string]any, error) {
 	var nodeMap map[string]any
 	if err := json.Unmarshal([]byte(data), &nodeMap); err != nil {
-		return nil, fmt.Errorf("unmarshal data failed: %v", err)
+		return nil, fmt.Errorf("unmarshal data failed: %w", err)
 	}
 
 	var nodes []any
@@ -79,7 +79,7 @@ func (rp *RecipeProcessor) parseJSON(data string) (map[string]any, error) {
 
 	recipeNode, err := rp.proc.Compact(recipeNode, rp.ctx, rp.opts)
 	if err != nil {
-		return nil, fmt.Errorf("could not compact Recipe node: %v", err)
+		return nil, fmt.Errorf("could not compact Recipe node: %w", err)
 	}
 
 	return recipeNode, nil

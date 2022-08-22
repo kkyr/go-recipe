@@ -1,17 +1,18 @@
-package custom
+package custom_test
 
 import (
 	"testing"
 	"time"
 
 	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/scraper/custom"
 	"github.com/kkyr/go-recipe/internal/scraper/test"
 )
 
-func TestForksOverKnivesScraper(t *testing.T) {
-	doc := test.ReadHTMLFileOrFail(t, ForksOverKnivesHost)
+func TestNewForksOverKnivesScraper(t *testing.T) {
+	doc := test.ReadHTMLFileOrFail(t, custom.ForksOverKnivesHost)
 
-	scraper, err := NewForksOverKnivesScraper(doc)
+	scraper, err := custom.NewForksOverKnivesScraper(doc)
 	if err != nil {
 		t.Fatalf("unexpected err while initializing scraper: %v", err)
 	}

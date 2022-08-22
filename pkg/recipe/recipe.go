@@ -18,8 +18,9 @@ type httpClient interface {
 
 var client httpClient = http.NewClient()
 
-// Scraper returns a recipe Scraper that scrapes data from the website at the given url.
-func Scraper(url string) (recipe.Scraper, error) {
+// ScrapeFrom retrieves the source at the provided url and returns a
+// Scraper that scrapes recipe data from the retrieved HTML.
+func ScrapeFrom(url string) (recipe.Scraper, error) {
 	body, err := client.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("unable to GET url: %w", err)
@@ -35,5 +36,10 @@ func Scraper(url string) (recipe.Scraper, error) {
 		return scraper(doc)
 	}
 
-	return schema.GetRecipeScraper(doc)
+	scraper, err := schema.NewRecipeScraper(doc)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get new schema scraper: %w", err)
+	}
+
+	return scraper, nil
 }

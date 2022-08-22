@@ -100,12 +100,12 @@ func getScrapersDir() (string, error) {
 func getRecipeData(body []byte) (map[string]any, error) {
 	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(body))
 	if err != nil {
-		return nil, fmt.Errorf("could not create document: %v", err)
+		return nil, fmt.Errorf("could not create document: %w", err)
 	}
 
-	scraper, err := schema.GetRecipeScraper(doc)
+	scraper, err := schema.NewRecipeScraper(doc)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create recipe scraper: %v", err)
+		return nil, fmt.Errorf("failed to create recipe scraper: %w", err)
 	}
 
 	return scraperToMap(scraper), nil
@@ -126,14 +126,14 @@ const newFileFlags = os.O_CREATE | os.O_WRONLY | os.O_EXCL
 func createTestDataFile(dir string, name string, body []byte) error {
 	path := getTestDataFilePath(dir, name)
 
-	f, err := os.OpenFile(path, newFileFlags, 0644)
+	f, err := os.OpenFile(path, newFileFlags, os.ModePerm)
 	if err != nil {
-		return fmt.Errorf("open file failed: %v", err)
+		return fmt.Errorf("open file failed: %w", err)
 	}
 	defer f.Close()
 
 	if _, err := f.Write(body); err != nil {
-		return fmt.Errorf("write file failed: %v", err)
+		return fmt.Errorf("write file failed: %w", err)
 	}
 
 	log.Printf("INFO: created file %s", path)
@@ -142,25 +142,25 @@ func createTestDataFile(dir string, name string, body []byte) error {
 }
 
 func createFile(path string, tmpl *template.Template, data map[string]any) error {
-	f, err := os.OpenFile(path, newFileFlags, 0644)
+	f, err := os.OpenFile(path, newFileFlags, os.ModePerm)
 	if err != nil {
-		return fmt.Errorf("open file failed: %v", err)
+		return fmt.Errorf("open file failed: %w", err)
 	}
 	defer f.Close()
 
 	var buf bytes.Buffer
 	if err := tmpl.Execute(&buf, data); err != nil {
-		return fmt.Errorf("template execute failed: %v", err)
+		return fmt.Errorf("template execute failed: %w", err)
 	}
 
 	// run gofmt on source
 	b, err := format.Source(buf.Bytes())
 	if err != nil {
-		return fmt.Errorf("could not format source file: %v", err)
+		return fmt.Errorf("could not format source file: %w", err)
 	}
 
 	if _, err := f.Write(b); err != nil {
-		return fmt.Errorf("write to file failed: %v", err)
+		return fmt.Errorf("write to file failed: %w", err)
 	}
 
 	log.Printf("INFO: created file %s", path)
@@ -190,7 +190,7 @@ func getModuleRoot() (string, error) {
 	cmd.Stdout = &out
 
 	if err := cmd.Run(); err != nil {
-		return "", fmt.Errorf("go env failed: %v", err)
+		return "", fmt.Errorf("go env failed: %w", err)
 	}
 
 	path := strings.TrimSpace(out.String())

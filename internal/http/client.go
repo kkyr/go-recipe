@@ -7,11 +7,14 @@ import (
 	"time"
 )
 
-const userAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
+const (
+	userAgent   = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
+	httpTimeout = 15 * time.Second
+)
 
 func NewClient() *Client {
 	return &Client{
-		c: &http.Client{Timeout: 15 * time.Second},
+		c: &http.Client{Timeout: httpTimeout},
 	}
 }
 
@@ -39,7 +42,7 @@ func (c *Client) Get(url string) ([]byte, error) {
 
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("could not read response body: %v", err)
+		return nil, fmt.Errorf("could not read response body: %w", err)
 	}
 
 	return b, nil

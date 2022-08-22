@@ -16,9 +16,9 @@ import (
 
 const {{.domain}}Host = "{{.host}}"
 
-// New{{.domain}}Scraper returns a {{.domain}}Scraper.
+// New{{.domain}}Scraper returns a new instance of {{.domain}}Scraper.
 func New{{.domain}}Scraper(doc *goquery.Document) (recipe.Scraper, error) {
-	s, err := schema.GetRecipeScraper(doc)
+	s, err := schema.NewRecipeScraper(doc)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create schema scraper: %w", err)
 	}
@@ -92,20 +92,21 @@ func (m *{{.domain}}Scraper) Yields() (string, bool) {
 }
 `))
 
-var scraperTestTmpl = template.Must(template.New("").Parse(`package custom
+var scraperTestTmpl = template.Must(template.New("").Parse(`package custom_test
 
 import (
 	"testing"
 	"time"
 
 	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/scraper/custom"
 	"github.com/kkyr/go-recipe/internal/scraper/test"
 )
 
-func Test{{.domain}}Scraper(t *testing.T) {
-	doc := test.ReadHTMLFileOrFail(t, {{.domain}}Host)
+func TestNew{{.domain}}Scraper(t *testing.T) {
+	doc := test.ReadHTMLFileOrFail(t, custom.{{.domain}}Host)
 
-	scraper, err := New{{.domain}}Scraper(doc)
+	scraper, err := custom.New{{.domain}}Scraper(doc)
 	if err != nil {
 		t.Fatalf("unexpected err while initializing scraper: %v", err)
 	}

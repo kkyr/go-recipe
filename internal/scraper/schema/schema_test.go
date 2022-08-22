@@ -1,458 +1,64 @@
-package schema
+package schema_test
 
 import (
-	"fmt"
-	"strings"
+	"os"
 	"testing"
 	"time"
 
 	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/scraper/schema"
 	"github.com/kkyr/go-recipe/internal/scraper/test"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
-func TestRecipeScraper_Author(t *testing.T) {
-	t.Run("string", func(t *testing.T) {
-		const want = "krishnamurti"
-		scraper := newRecipeScraper(map[string]any{
-			"author": map[string]any{
-				"name": want,
-			},
-		})
-
-		got, ok := scraper.Author()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.Author()
-		test.Verify(t, false, ok, "", got)
-	})
-}
-
-func TestRecipeScraper_Categories(t *testing.T) {
-	t.Run("string-slice", func(t *testing.T) {
-		want := []string{"Appetizer", "Dessert"}
-		scraper := newRecipeScraper(map[string]any{
-			"recipeCategory": strings.Join(want, ","),
-		})
-
-		got, ok := scraper.Categories()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("slice", func(t *testing.T) {
-		want := []string{"Dessert", "Appetizer"}
-		scraper := newRecipeScraper(map[string]any{
-			"recipeCategory": []any{
-				want[0], want[1],
-			},
-		})
-
-		got, ok := scraper.Categories()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("string", func(t *testing.T) {
-		want := []string{"aperitif"}
-		scraper := newRecipeScraper(map[string]any{
-			"recipeCategory": want[0],
-		})
-
-		got, ok := scraper.Categories()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.Categories()
-		test.Verify(t, false, ok, "", got)
-	})
-}
-
-func TestRecipeScraper_CookTime(t *testing.T) {
-	t.Run("string", func(t *testing.T) {
-		const want = 5 * time.Minute
-		scraper := newRecipeScraper(map[string]any{
-			"cookTime": "PT5M",
-		})
-
-		got, ok := scraper.CookTime()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.CookTime()
-		test.Verify(t, false, ok, "", got)
-	})
-}
-
-func TestRecipeScraper_Cuisine(t *testing.T) {
-	t.Run("slice", func(t *testing.T) {
-		want := []string{"French", "Italian", "Indian"}
-		scraper := newRecipeScraper(map[string]any{
-			"recipeCuisine": []any{
-				want[0], want[1], want[2],
-			},
-		})
-
-		got, ok := scraper.Cuisine()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.Cuisine()
-		test.Verify(t, false, ok, "", got)
-	})
-}
-
-func TestRecipeScraper_Description(t *testing.T) {
-	t.Run("string", func(t *testing.T) {
-		const want = "best you've ever had"
-		scraper := newRecipeScraper(map[string]any{
-			"description": want,
-		})
-
-		got, ok := scraper.Description()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.Description()
-		test.Verify(t, false, ok, "", got)
-	})
-}
-
-func TestRecipeScraper_ImageURL(t *testing.T) {
-	t.Run("inner-string", func(t *testing.T) {
-		const want = "https://www.example.com/image.jpg"
-		scraper := newRecipeScraper(map[string]any{
-			"image": map[string]any{
-				"url": want,
-			},
-		})
-
-		got, ok := scraper.ImageURL()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("string", func(t *testing.T) {
-		const want = "https://www.example.com/image.jpg"
-		scraper := newRecipeScraper(map[string]any{
-			"image": want,
-		})
-
-		got, ok := scraper.ImageURL()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("slice", func(t *testing.T) {
-		const want = "https://www.example.com/image.jpg"
-		scraper := newRecipeScraper(map[string]any{
-			"image": []any{
-				want,
-			},
-		})
-
-		got, ok := scraper.ImageURL()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.ImageURL()
-		test.Verify(t, false, ok, "", got)
-	})
-}
-
-func TestRecipeScraper_Ingredients(t *testing.T) {
-	t.Run("string-recipeIngredient", func(t *testing.T) {
-		want := []string{"ingredient 1"}
-
-		scraper := newRecipeScraper(map[string]any{
-			"recipeIngredient": want[0],
-		})
-
-		got, ok := scraper.Ingredients()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("slice-recipeIngredient", func(t *testing.T) {
-		want := []string{
-			"ingredient 1",
-			"ingredient 2",
-			"ingredient 3",
-		}
-		scraper := newRecipeScraper(map[string]any{
-			"recipeIngredient": []any{
-				want[0],
-				want[1],
-				want[2],
-			},
-		})
-
-		got, ok := scraper.Ingredients()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("string-ingredients", func(t *testing.T) {
-		want := []string{"ingredient 1"}
-
-		scraper := newRecipeScraper(map[string]any{
-			"ingredients": want[0],
-		})
-
-		got, ok := scraper.Ingredients()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("slice-ingredients", func(t *testing.T) {
-		want := []string{
-			"ingredient 1",
-			"ingredient 2",
-			"ingredient 3",
-		}
-		scraper := newRecipeScraper(map[string]any{
-			"ingredients": []any{
-				want[0],
-				want[1],
-				want[2],
-			},
-		})
-
-		got, ok := scraper.Ingredients()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.Ingredients()
-		test.Verify(t, false, ok, "", got)
-	})
-}
-
-func TestRecipeScraper_Instructions(t *testing.T) {
-	t.Run("slice", func(t *testing.T) {
-		want := []string{
-			"instruction 1",
-			"instruction 2",
-			"instruction 3",
-		}
-		scraper := newRecipeScraper(map[string]any{
-			"recipeInstructions": []any{
-				want[0],
-				map[string]any{
-					"type": "HowToStep",
-					"text": want[1],
-				},
-				map[string]any{
-					"itemListElement": []any{
-						map[string]any{
-							"type": "HowToStep",
-							"text": want[2],
-						},
-					},
-				},
-			},
-		})
-
-		got, ok := scraper.Instructions()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.Instructions()
-		test.Verify(t, false, ok, "", got)
-	})
-}
-
-func TestRecipeScraper_Language(t *testing.T) {
-	t.Run("string-inLanguage", func(t *testing.T) {
-		const want = "en-US"
-		scraper := newRecipeScraper(map[string]any{
-			"inLanguage": want,
-		})
-
-		got, ok := scraper.Language()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("string-language", func(t *testing.T) {
-		const want = "en-US"
-		scraper := newRecipeScraper(map[string]any{
-			"language": want,
-		})
-
-		got, ok := scraper.Language()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.Language()
-		test.Verify(t, false, ok, "", got)
-	})
-}
-
-func TestRecipeScraper_Name(t *testing.T) {
-	t.Run("string", func(t *testing.T) {
-		const want = "fried milk"
-		scraper := newRecipeScraper(map[string]any{
-			"name": want,
-		})
-
-		got, ok := scraper.Name()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.Name()
-		test.Verify(t, false, ok, "", got)
-	})
-}
-
-func TestRecipeScraper_Nutrition(t *testing.T) {
-	t.Run("map", func(t *testing.T) {
-		want := recipe.Nutrition{Calories: 320}
-		scraper := newRecipeScraper(map[string]any{
-			"nutrition": map[string]any{
-				"calories": fmt.Sprintf("%f kcal", want.Calories),
-			},
-		})
-
-		got, ok := scraper.Nutrition()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.Nutrition()
-		test.Verify(t, false, ok, "", got)
-	})
-}
-
-func TestRecipeScraper_PrepTime(t *testing.T) {
-	t.Run("string", func(t *testing.T) {
-		const want = 1 * time.Hour
-		scraper := newRecipeScraper(map[string]any{
-			"prepTime": "PT1H",
-		})
-
-		got, ok := scraper.PrepTime()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.PrepTime()
-		test.Verify(t, false, ok, "", got)
-	})
-}
-
-func TestRecipeScraper_SuitableDiets(t *testing.T) {
-	t.Run("map", func(t *testing.T) {
-		want := []recipe.Diet{recipe.VeganDiet, recipe.VegetarianDiet}
-		scraper := newRecipeScraper(map[string]any{
-			"suitableForDiet": fmt.Sprintf("%s, %s", want[0], want[1]),
-		})
-
-		got, ok := scraper.SuitableDiets()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.SuitableDiets()
-		test.Verify(t, false, ok, "", got)
-	})
-}
-
-func TestRecipeScraper_TotalTime(t *testing.T) {
-	t.Run("string", func(t *testing.T) {
-		const want = 62 * time.Minute
-		scraper := newRecipeScraper(map[string]any{
-			"totalTime": "PT1H2M",
-		})
-
-		got, ok := scraper.TotalTime()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.TotalTime()
-		test.Verify(t, false, ok, "", got)
-	})
-}
-
-func TestRecipeScraper_Yields(t *testing.T) {
-	t.Run("string-yield", func(t *testing.T) {
-		const want = "5 tons"
-		scraper := newRecipeScraper(map[string]any{
-			"yield": want,
-		})
-
-		got, ok := scraper.Yields()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("slice-yield", func(t *testing.T) {
-		const want = "5 tons"
-		scraper := newRecipeScraper(map[string]any{
-			"yield": []any{
-				want,
-			},
-		})
-
-		got, ok := scraper.Yields()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("string-recipeYield", func(t *testing.T) {
-		const want = "5 tons"
-		scraper := newRecipeScraper(map[string]any{
-			"recipeYield": want,
-		})
-
-		got, ok := scraper.Yields()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("slice-recipeYield", func(t *testing.T) {
-		const want = "5 tons"
-		scraper := newRecipeScraper(map[string]any{
-			"recipeYield": []any{
-				want,
-			},
-		})
-
-		got, ok := scraper.Yields()
-		test.Verify(t, true, ok, want, got)
-	})
-
-	t.Run("empty", func(t *testing.T) {
-		scraper := newRecipeScraper(map[string]any{})
-
-		got, ok := scraper.Yields()
-		test.Verify(t, false, ok, "", got)
-	})
+func TestNewRecipeScraper(t *testing.T) {
+	file, err := os.Open("testdata/json-ld-schema.html")
+	if err != nil {
+		t.Fatalf("unexpected err while opening file: %v", err)
+	}
+	defer file.Close()
+
+	doc, err := goquery.NewDocumentFromReader(file)
+	if err != nil {
+		t.Fatalf("unexpected err while reading file: %v", err)
+	}
+
+	scraperTest := test.Scraper{
+		Author:       "Sara Buenfeld",
+		Categories:   []string{"Dinner", "Lunch", "Supper"},
+		CookTime:     5 * time.Minute,
+		Cuisine:      nil,
+		Description:  "Cook and serve this easy, healthy lunch in under 15 minutes. It gives you three of your 5-a-day, and the wholemeal noodles add fibre while colourful veg provides beta-carotene and vitamin C.",
+		ImageURL:     "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/hdp-noodle-salad-440-400-76177ff.jpg?resize=768,574",
+		Ingredients:  []string{"1 tbsp sesame oil", "2 tsp tamari", "1 lemon , juiced", "1 red chilli , deseeded and finely chopped", "1 small onion , finely chopped", "2 wholemeal noodle nests (about 100g)", "160g sugar snap peas", "4 small clementines , peeled and chopped", "160g shredded carrots", "large handful of coriander , chopped", "50g roasted unsalted cashews"},
+		Instructions: []string{"Mix all the dressing ingredients together in a large bowl, then stir in the onion. Meanwhile, cook the noodles in a pan of boiling water for 5 mins, adding the sugar snap peas halfway through the cooking time – the noodles and peas should be just tender. Drain, cool under cold running water and drain again. Snip or cut the noodles into smaller lengths to make them more manageable to eat.", "Tip the noodles and peas into the bowl with the dressing, along with the clementines, carrots, coriander and cashews. Toss to combine, then serve in bowls or pack into rigid airtight containers to take to work."},
+		Language:     "",
+		Name:         "Noodle salad with sesame dressing",
+		Nutrition: recipe.Nutrition{
+			Calories:              526,
+			CarbohydrateGrams:     68,
+			CholesterolMilligrams: 0,
+			FatGrams:              19,
+			FiberGrams:            11,
+			ProteinGrams:          16,
+			SaturatedFatGrams:     3,
+			ServingSize:           "",
+			SodiumMilligrams:      1.16,
+			SugarGrams:            22,
+			TransFatGrams:         0,
+			UnsaturatedFatGrams:   0,
+		},
+		PrepTime:      7 * time.Minute,
+		SuitableDiets: []recipe.Diet{recipe.GlutenFreeDiet, recipe.VeganDiet, recipe.VegetarianDiet},
+		TotalTime:     12 * time.Minute,
+		Yields:        "",
+	}
+
+	scraper, err := schema.NewRecipeScraper(doc)
+	if err != nil {
+		t.Fatalf("unexpected err while initializing scraper: %v", err)
+	}
+
+	scraperTest.Run(t, scraper)
 }

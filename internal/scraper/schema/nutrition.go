@@ -14,7 +14,9 @@ var matchFirstNumber = regexp.MustCompile(`(\d*[.])?\d+`)
 func ParseNutritionalInformation(data map[string]any) recipe.Nutrition {
 	parseFloat := func(d any) float32 {
 		if s, ok := d.(string); ok {
-			d, _ := strconv.ParseFloat(matchFirstNumber.FindString(s), 32)
+			const bitSize = 32
+			d, _ := strconv.ParseFloat(matchFirstNumber.FindString(s), bitSize)
+
 			return float32(d)
 		}
 

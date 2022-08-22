@@ -13,12 +13,10 @@ import (
 	"github.com/senseyeio/duration"
 )
 
-var ldProcessor = ld.NewRecipeProcessor()
-
-// GetRecipeScraper returns a RecipeScraper that scrapes recipe data from an HTML
-// document containing a Schema.org Recipe.
-func GetRecipeScraper(doc *goquery.Document) (*RecipeScraper, error) {
-	node, err := ldProcessor.GetRecipeNode(doc)
+// NewRecipeScraper returns a new instance of RecipeScraper. The provided doc
+// is scraped for a recipe and an error is returned if none is found.
+func NewRecipeScraper(doc *goquery.Document) (*RecipeScraper, error) {
+	node, err := ld.NewRecipeProcessor().GetRecipeNode(doc)
 	if err != nil {
 		return nil, fmt.Errorf("could not get recipe root from ld+json document: %w", err)
 	}

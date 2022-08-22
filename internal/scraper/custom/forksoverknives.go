@@ -14,9 +14,9 @@ import (
 
 const ForksOverKnivesHost = "forksoverknives.com"
 
-// NewForksOverKnivesScraper returns a ForksOverKnivesScraper.
+// NewForksOverKnivesScraper returns a new instance of ForksOverKnivesScraper.
 func NewForksOverKnivesScraper(doc *goquery.Document) (recipe.Scraper, error) {
-	s, err := schema.GetRecipeScraper(doc)
+	s, err := schema.NewRecipeScraper(doc)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create schema scraper: %w", err)
 	}

@@ -30,7 +30,7 @@ const htmlSchemaRecipe = `<html>
     </head>
 </html>`
 
-func TestScraper(t *testing.T) {
+func TestScrapeFrom(t *testing.T) {
 	client = &mockHTTPClient{
 		GetFunc: func(url string) ([]byte, error) {
 			return []byte(htmlSchemaRecipe), nil
@@ -38,7 +38,7 @@ func TestScraper(t *testing.T) {
 	}
 
 	t.Run("using custom scraper", func(t *testing.T) {
-		scraper, err := Scraper(custom.MinimalistBakerHost)
+		scraper, err := ScrapeFrom(custom.MinimalistBakerHost)
 		if err != nil {
 			t.Fatalf("unexpected err when getting scraper: %v", err)
 		}
@@ -53,7 +53,7 @@ func TestScraper(t *testing.T) {
 	})
 
 	t.Run("using default scraper", func(t *testing.T) {
-		scraper, err := Scraper("")
+		scraper, err := ScrapeFrom("")
 		if err != nil {
 			t.Fatalf("unexpected err when getting scraper: %v", err)
 		}
@@ -68,7 +68,7 @@ func TestScraper(t *testing.T) {
 	})
 }
 
-func TestScraper_Err(t *testing.T) {
+func TestScrapeFrom_Err(t *testing.T) {
 	t.Run("using bad document", func(t *testing.T) {
 		client = &mockHTTPClient{
 			GetFunc: func(url string) ([]byte, error) {
@@ -76,7 +76,7 @@ func TestScraper_Err(t *testing.T) {
 			},
 		}
 
-		_, err := Scraper("")
+		_, err := ScrapeFrom("")
 		if err == nil {
 			t.Fatalf("want err, got nil")
 		}
@@ -91,7 +91,7 @@ func TestScraper_Err(t *testing.T) {
 			},
 		}
 
-		_, err := Scraper("")
+		_, err := ScrapeFrom("")
 		if !errors.Is(err, boom) {
 			t.Fatalf("want %v, got %v", boom, err)
 		}
