@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/kkyr/go-recipe"
-	"github.com/kkyr/go-recipe/internal/scraper/schema"
-	"github.com/kkyr/go-recipe/internal/scraper/test"
+	"github.com/kkyr/go-recipe/internal/scrape/schema"
+	"github.com/kkyr/go-recipe/internal/scrape/test"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/kkyr/assert"

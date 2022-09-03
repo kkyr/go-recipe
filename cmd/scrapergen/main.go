@@ -16,7 +16,7 @@ import (
 
 	"github.com/kkyr/go-recipe"
 	"github.com/kkyr/go-recipe/internal/http"
-	"github.com/kkyr/go-recipe/internal/scraper/schema"
+	"github.com/kkyr/go-recipe/internal/scrape/schema"
 	urlutil "github.com/kkyr/go-recipe/internal/url"
 
 	"github.com/PuerkitoBio/goquery"
@@ -94,7 +94,7 @@ func getScrapersDir() (string, error) {
 		return "", fmt.Errorf("could not get module root: %w", err)
 	}
 
-	return filepath.Join(root, "internal", "scraper", "custom"), nil
+	return filepath.Join(root, "internal", "scrape", "custom"), nil
 }
 
 func getRecipeData(body []byte) (map[string]any, error) {

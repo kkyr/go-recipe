@@ -2,7 +2,7 @@ package recipe
 
 import (
 	"github.com/kkyr/go-recipe"
-	"github.com/kkyr/go-recipe/internal/scraper/custom"
+	"github.com/kkyr/go-recipe/internal/scrape/custom"
 
 	"github.com/PuerkitoBio/goquery"
 )

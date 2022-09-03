@@ -15,10 +15,10 @@ linters:
 
 issues:
   exclude-rules:
-    - path: internal/scraper/custom/
+    - path: internal/scrape/custom/
       linters:
         - dupl
-    - path: internal/scraper/test/scraper.go
+    - path: internal/scrape/test/scraper.go
       linters:
         - funlen
     - path: _test\.go
