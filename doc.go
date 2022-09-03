@@ -4,7 +4,7 @@
 //
 // Therefore, custom scrapers exist that are used to scrape specific websites. These scrapers can make use of the default scraper so that custom scraping logic is only defined for fields that the default scraper could not find any data for.
 //
-// The custom scrapers are registered in [pkg/recipe/scrapers.go] and are identified by host name, which represents the website that they are used for. When a client provides go-recipe with a link to scrape, the host name is extracted from the link and is used to find the corresponding custom scraper. The default scraper is used if no custom scraper is defined.
+// The custom scrapers are registered in [scrapers.go] and are identified by host name, which represents the website that they are used for. When a client provides go-recipe with a link to scrape, the host name is extracted from the link and is used to find the corresponding custom scraper. The default scraper is used if no custom scraper is defined.
 //
 // # Example
 //
@@ -26,6 +26,5 @@
 //	}
 //
 // [Schema Recipe]: https://schema.org/Recipe
-//
 // [scrapers.go]: https://github.com/kkyr/go-recipe/blob/main/pkg/recipe/scrapers.go
 package recipe
