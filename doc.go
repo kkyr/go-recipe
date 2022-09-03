@@ -1,10 +1,10 @@
-// Package recipe is a Go library for scraping recipes from website.
+// Package recipe is a Go library that is able to scrape recipes from websites.
 //
-// The go-recipe default scraper relies on the target website containing a [Schema Recipe] encoded in `ld+json` format and is able to retrieve most fields defined by the schema. However, some websites simply do not contain the recipe encoded this way and some others that do can be incomplete.
+// The go-recipe default scraper looks for a [Schema Recipe] on the target website encoded in `ld+json` format and is able to retrieve most fields defined in the schema. However, not all websites contain the recipe encoded as such, whereas some others that do can contain incomplete data.
 //
-// Therefore, this package allows custom scrapers to be defined which contain scraping logic customized to specific websites. The custom scrapers can make use of the default scraper so that custom scraping logic only needs to be defined for fields that the default scraper could not extract any information.
+// Therefore, this package allows custom scrapers to be defined which contain scraping logic specific to a certain website. The custom scrapers can make use of the default scraper so that custom scraping logic only needs to be defined for fields that the default scraper could not extract any data.
 //
-// The custom scrapers are registered in [github.com/kkyr/go-recipe/recipe/scrapers.go] and are identified by host name, which represents the website that they should be used for. When a client provides this package with a link to scrape, the host name is extracted from the link and is used to find the corresponding custom scraper. If none is found, the default scraper is used. In other words, which scraper will be used is a decision made implicitly based on the target website.
+// The custom scrapers are registered in [scrapers.go] and are identified by host name, which represents the website that they are used for. When a client provides go-recipe with a link to scrape, the host name is extracted from the link and is used to find the corresponding custom scraper. The default scraper is used if no custom scraper is defined.
 //
 // # Example
 //
@@ -21,8 +21,10 @@
 //	  }
 //
 //	  ingredients, ok := scraper.Ingredients()
-//	  // + many more fields available
+//	  instructions, ok := scraper.Instructions()
+//	  // ... & more fields available
 //	}
 //
 // [Schema Recipe]: https://schema.org/Recipe
+// [scrapers.go]: https://github.com/kkyr/go-recipe/blob/main/pkg/recipe/scrapers.go
 package recipe

@@ -12,15 +12,13 @@
 
 # go-recipe
 
-go-recipe is a Go library for scraping recipes from websites.
+go-recipe is a Go library that is able to scrape recipes from websites.
 
-## Getting started
-
-Pull the package into your module:
+## Installation
 
 `$ go get github.com/kkyr/go-recipe@latest`
 
-And use it in code:
+## Usage
 
 ```go
 package main
@@ -34,27 +32,28 @@ func main() {
   if err != nil {
 	panic(err)
   }
-	
+  
   ingredients, ok := scraper.Ingredients() 
-  // + many more fields available
+  instructions, ok := scraper.Instructions()
+  // ... & more fields available
 }
 ```
 
 ## Scraping
 
-The go-recipe default scraper relies on the target website containing a [Schema Recipe](https://schema.org/Recipe) encoded in `ld+json` format and is able to retrieve most fields defined by the schema. However, some websites simply do not contain the recipe encoded this way and some others that do can be incomplete.
+The go-recipe default scraper looks for a [Schema Recipe](https://schema.org/Recipe) on the target website encoded in `ld+json` format and is able to retrieve most fields defined in the schema. However, not all websites contain the recipe encoded as such, whereas some others that do can contain incomplete data.
 
-Therefore, this package allows custom scrapers to be defined which contain scraping logic customized to specific websites. The custom scrapers can make use of the default scraper so that custom scraping logic only needs to be defined for fields that the default scraper could not extract any information.
+Therefore, this package allows custom scrapers to be defined which contain scraping logic specific to a certain website. The custom scrapers can make use of the default scraper so that custom scraping logic only needs to be defined for fields that the default scraper could not extract any data.
 
-The custom scrapers are registered in [pkg/recipe/scrapers.go](/pkg/recipe/scrapers.go) and are identified by host name, which represents the website that they should be used for. When a client provides this package with a link to scrape, the host name is extracted from the link and is used to find the corresponding custom scraper. If none is found, the default scraper is used. In other words, which scraper will be used is a decision made implicitly based on the target website.
+The custom scrapers are registered in [pkg/recipe/scrapers.go](/pkg/recipe/scrapers.go) and are identified by host name, which represents the website that they are used for. When a client provides go-recipe with a link to scrape, the host name is extracted from the link and is used to find the corresponding custom scraper. The default scraper is used if no custom scraper is defined.
 
 ## Contributing
 
-Contributions are very welcome! You can contribute in a few ways: by adding a custom scraper, patching a bug, implementing a feature based on the roadmap (see further below), or simply incorporating any other feature that you'd like to see. For the latter case, please start a discussion describing your thoughts so that we can first align before you start coding.
+Contributions are welcome! You can contribute in a few ways: by adding a custom scraper, patching a bug, implementing a feature based on the roadmap (see further below), or by incorporating any other feature that you'd like to see. For the latter case, please first open a discussion so that we can align on the change before you start coding.
 
 ### Custom scrapers
 
-Creating a custom scraper is easy as pie thanks to the code generator that's included in this package. The generator requires two arguments: a link to a recipe and the domain of the website that the recipe is hosted on. The domain is used to generate the source code (particularly the file and struct names), and the link is used to scrape recipe data, which is then used to generate a fully-functioning unit test. If the generator is unable to scrape recipe data (which can happen if the website does not contain a Schema Recipe), a test will still be generated but the assertions will be made against empty fields.
+Creating a custom scraper is easy as pie thanks to the code generator that's included in this package. The generator requires two arguments: a link to a recipe on a website and the domain of the website that the recipe is hosted on. The domain is used to generate the source code (particularly the file and struct names), and the link is used to scrape recipe data, which is then used to generate a fully functioning unit test. If the generator is unable to scrape recipe data (which can happen if the website does not contain a Schema Recipe), a test will still be generated but test assertions will be made against empty fields.
 
 To use the code generator, run the following command while inside the go-recipe package:
 
@@ -92,10 +91,6 @@ You should now be ready to send a PR!
 - [ ] Add option for user to specify "strict" mode: in this mode only custom scrapers will be used if defined, otherwise fail.
 - [ ] Add more Schema Recipe fields.
 - [ ] Add CLI wrapper over the scraper, providing output in JSON.
-
-## Disclaimer
-
-Given that I created this package recently, I haven't had the chance yet to use it in a project nor have I received feedback from anyone. Therefore, there might be breaking changes in the short term based on community feedback and/or through insights that I personally make as a client of the package.
 
 ## Acknowledgements
 
