@@ -96,4 +96,4 @@ You should now be ready to send a PR!
 
 ## Acknowledgements
 
-go-recipe is heavily inspired [recipe-scrapers](https://github.com/hhursev/recipe-scrapers).
+go-recipe is heavily inspired by [recipe-scrapers](https://github.com/hhursev/recipe-scrapers).
