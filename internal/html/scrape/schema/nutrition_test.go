@@ -3,7 +3,7 @@ package schema_test
 import (
 	"testing"
 
-	"github.com/kkyr/go-recipe/internal/scrape/schema"
+	"github.com/kkyr/go-recipe/internal/html/scrape/schema"
 
 	"github.com/kkyr/assert"
 )

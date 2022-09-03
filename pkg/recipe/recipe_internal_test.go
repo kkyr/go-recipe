@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/kkyr/go-recipe/internal/scrape/custom"
-	"github.com/kkyr/go-recipe/internal/scrape/schema"
-	"github.com/kkyr/go-recipe/internal/scrape/test"
+	"github.com/kkyr/go-recipe/internal/html/scrape/custom"
+	"github.com/kkyr/go-recipe/internal/html/scrape/schema"
+	"github.com/kkyr/go-recipe/internal/html/scrape/test"
 
 	"github.com/kkyr/assert"
 )

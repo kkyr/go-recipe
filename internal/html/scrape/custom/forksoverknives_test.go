@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/kkyr/go-recipe"
-	"github.com/kkyr/go-recipe/internal/scrape/custom"
-	"github.com/kkyr/go-recipe/internal/scrape/test"
+	"github.com/kkyr/go-recipe/internal/html/scrape/custom"
+	"github.com/kkyr/go-recipe/internal/html/scrape/test"
 
 	"github.com/kkyr/assert"
 )

@@ -15,9 +15,9 @@ import (
 	"time"
 
 	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/html/scrape/schema"
 	"github.com/kkyr/go-recipe/internal/http"
-	"github.com/kkyr/go-recipe/internal/scrape/schema"
-	urlutil "github.com/kkyr/go-recipe/internal/url"
+	"github.com/kkyr/go-recipe/internal/url"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -49,8 +49,8 @@ func main() {
 	run(*domain, *url)
 }
 
-func run(domain, url string) {
-	host := urlutil.GetHost(url)
+func run(domain, urlStr string) {
+	host := url.GetHost(urlStr)
 	log.Printf("DEBUG: extracted host %q from url", host)
 
 	dir, err := getScrapersDir()
@@ -60,7 +60,7 @@ func run(domain, url string) {
 
 	log.Printf("DEBUG: using scrapers directory %q", dir)
 
-	body, err := http.NewClient().Get(url)
+	body, err := http.NewClient().Get(urlStr)
 	if err != nil {
 		log.Fatalf("ERROR: failed to GET url: %v", err)
 	}
@@ -94,7 +94,7 @@ func getScrapersDir() (string, error) {
 		return "", fmt.Errorf("could not get module root: %w", err)
 	}
 
-	return filepath.Join(root, "internal", "scrape", "custom"), nil
+	return filepath.Join(root, "internal", "html", "scrape", "custom"), nil
 }
 
 func getRecipeData(body []byte) (map[string]any, error) {

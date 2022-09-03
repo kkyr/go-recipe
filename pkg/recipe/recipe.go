@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/kkyr/go-recipe"
+	"github.com/kkyr/go-recipe/internal/html/scrape/schema"
 	"github.com/kkyr/go-recipe/internal/http"
-	"github.com/kkyr/go-recipe/internal/scrape/schema"
-	urlutil "github.com/kkyr/go-recipe/internal/url"
+	"github.com/kkyr/go-recipe/internal/url"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -20,8 +20,8 @@ var client httpClient = http.NewClient()
 
 // ScrapeFrom retrieves the source at the provided url and returns a
 // Scraper that scrapes recipe data from the retrieved HTML.
-func ScrapeFrom(url string) (recipe.Scraper, error) {
-	body, err := client.Get(url)
+func ScrapeFrom(urlStr string) (recipe.Scraper, error) {
+	body, err := client.Get(urlStr)
 	if err != nil {
 		return nil, fmt.Errorf("unable to GET url: %w", err)
 	}
@@ -31,7 +31,7 @@ func ScrapeFrom(url string) (recipe.Scraper, error) {
 		return nil, fmt.Errorf("unable to parse HTML document: %w", err)
 	}
 
-	host := urlutil.GetHost(url)
+	host := url.GetHost(urlStr)
 	if scraper, ok := hostToScraper[host]; ok {
 		return scraper(doc)
 	}

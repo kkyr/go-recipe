@@ -71,9 +71,9 @@ _(replace the domain and link with your own)_
 The sample command above would generate the following files:
 
 ```shell
-go-recipe/internal/scrape/custom/copykat.go
-go-recipe/internal/scrape/custom/copykat_test.go
-go-recipe/internal/scrape/custom/testdata/copykat.com.html
+go-recipe/internal/html/scrape/custom/copykat.go
+go-recipe/internal/html/scrape/custom/copykat_test.go
+go-recipe/internal/html/scrape/custom/testdata/copykat.com.html
 ```
 
 The generator can't do everything (at least not yet), so there's some final touches that you must put in:

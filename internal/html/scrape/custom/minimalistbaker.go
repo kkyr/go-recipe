@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/kkyr/go-recipe"
-	"github.com/kkyr/go-recipe/internal/scrape/schema"
+	"github.com/kkyr/go-recipe/internal/html/scrape/schema"
 
 	"github.com/PuerkitoBio/goquery"
 )
