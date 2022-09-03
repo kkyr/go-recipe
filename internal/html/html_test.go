@@ -4,9 +4,13 @@ import (
 	"testing"
 
 	"github.com/kkyr/go-recipe/internal/html"
+
+	"github.com/kkyr/assert"
 )
 
 func TestCleanString(t *testing.T) {
+	assert := assert.New(t)
+
 	for _, tc := range []struct {
 		in   string
 		want string
@@ -33,10 +37,7 @@ func TestCleanString(t *testing.T) {
 		},
 	} {
 		t.Run(tc.in, func(t *testing.T) {
-			got := html.CleanString(tc.in)
-			if tc.want != got {
-				t.Errorf("want %q, got %q", tc.want, got)
-			}
+			assert.Equal(tc.want, html.CleanString(tc.in))
 		})
 	}
 }

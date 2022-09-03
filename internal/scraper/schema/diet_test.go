@@ -5,9 +5,13 @@ import (
 
 	"github.com/kkyr/go-recipe"
 	"github.com/kkyr/go-recipe/internal/scraper/schema"
+
+	"github.com/kkyr/assert"
 )
 
 func TestParseDiet(t *testing.T) {
+	assert := assert.New(t)
+
 	for _, tc := range []struct {
 		in   string
 		want recipe.Diet
@@ -20,10 +24,7 @@ func TestParseDiet(t *testing.T) {
 		{in: "not-a-diet", want: recipe.UnknownDiet},
 	} {
 		t.Run(tc.in, func(t *testing.T) {
-			got := schema.ParseDiet(tc.in)
-			if tc.want != got {
-				t.Errorf("want %q, got %q", tc.want, got)
-			}
+			assert.Equal(tc.want, schema.ParseDiet(tc.in))
 		})
 	}
 }

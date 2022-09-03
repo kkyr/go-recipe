@@ -4,9 +4,13 @@ import (
 	"testing"
 
 	"github.com/kkyr/go-recipe/internal/scraper/schema"
+
+	"github.com/kkyr/assert"
 )
 
 func TestParseNutritionalInformation(t *testing.T) {
+	assert := assert.New(t)
+
 	data := map[string]any{
 		"calories":              "30 kcal",
 		"carbohydrateContent":   "8grams",
@@ -24,51 +28,16 @@ func TestParseNutritionalInformation(t *testing.T) {
 
 	nutrition := schema.ParseNutritionalInformation(data)
 
-	if want := float32(30); nutrition.Calories != want {
-		t.Errorf("Calories = %f, want %f", nutrition.Calories, want)
-	}
-
-	if want := float32(8); nutrition.CarbohydrateGrams != want {
-		t.Errorf("CarbohydrateGrams = %f, want %f", nutrition.CarbohydrateGrams, want)
-	}
-
-	if want := float32(3.5); nutrition.CholesterolMilligrams != want {
-		t.Errorf("CholesterolMilligrams = %f, want %f", nutrition.CholesterolMilligrams, want)
-	}
-
-	if want := float32(11.5); nutrition.FatGrams != want {
-		t.Errorf("FatGrams = %f, want %f", nutrition.FatGrams, want)
-	}
-
-	if want := float32(105); nutrition.FiberGrams != want {
-		t.Errorf("FiberGrams = %f, want %f", nutrition.FiberGrams, want)
-	}
-
-	if want := float32(31); nutrition.ProteinGrams != want {
-		t.Errorf("ProteinGrams = %f, want %f", nutrition.ProteinGrams, want)
-	}
-
-	if want := float32(201); nutrition.SaturatedFatGrams != want {
-		t.Errorf("SaturatedFatGrams = %f, want %f", nutrition.SaturatedFatGrams, want)
-	}
-
-	if want := data["servingSize"]; nutrition.ServingSize != want {
-		t.Errorf("ServingSize = %s, want %s", nutrition.ServingSize, want)
-	}
-
-	if want := float32(78); nutrition.SodiumMilligrams != want {
-		t.Errorf("SodiumMilligrams = %f, want %f", nutrition.SodiumMilligrams, want)
-	}
-
-	if want := float32(13.3); nutrition.SugarGrams != want {
-		t.Errorf("SugarGrams = %f, want %f", nutrition.SugarGrams, want)
-	}
-
-	if want := float32(0.55); nutrition.TransFatGrams != want {
-		t.Errorf("SugarGrams = %f, want %f", nutrition.TransFatGrams, want)
-	}
-
-	if want := float32(1.1); nutrition.UnsaturatedFatGrams != want {
-		t.Errorf("SugarGrams = %f, want %f", nutrition.SugarGrams, want)
-	}
+	assert.Field("Calories").Equal(float32(30), nutrition.Calories)
+	assert.Field("CarbohydrateGrams").Equal(float32(8), nutrition.CarbohydrateGrams)
+	assert.Field("CholesterolMilligrams").Equal(float32(3.5), nutrition.CholesterolMilligrams)
+	assert.Field("FatGrams").Equal(float32(11.5), nutrition.FatGrams)
+	assert.Field("FiberGrams").Equal(float32(105), nutrition.FiberGrams)
+	assert.Field("ProteinGrams").Equal(float32(31), nutrition.ProteinGrams)
+	assert.Field("SaturatedFatGrams").Equal(float32(201), nutrition.SaturatedFatGrams)
+	assert.Field("ServingSize").Equal("4 loafs", nutrition.ServingSize)
+	assert.Field("SodiumMilligrams").Equal(float32(78), nutrition.SodiumMilligrams)
+	assert.Field("SugarGrams").Equal(float32(13.3), nutrition.SugarGrams)
+	assert.Field("TransFatGrams").Equal(float32(0.55), nutrition.TransFatGrams)
+	assert.Field("UnsaturatedFatGrams").Equal(float32(1.1), nutrition.UnsaturatedFatGrams)
 }

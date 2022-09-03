@@ -7,15 +7,15 @@ import (
 	"github.com/kkyr/go-recipe"
 	"github.com/kkyr/go-recipe/internal/scraper/custom"
 	"github.com/kkyr/go-recipe/internal/scraper/test"
+
+	"github.com/kkyr/assert"
 )
 
 func TestNewMinimalistBakerScraper(t *testing.T) {
 	doc := test.ReadHTMLFileOrFail(t, custom.MinimalistBakerHost)
 
 	scraper, err := custom.NewMinimalistBakerScraper(doc)
-	if err != nil {
-		t.Fatalf("unexpected err while initializing scraper: %v", err)
-	}
+	assert.New(t).Require().Nil(err)
 
 	scraperTest := test.Scraper{
 		Author:       "Minimalist Baker",

@@ -101,15 +101,15 @@ import (
 	"github.com/kkyr/go-recipe"
 	"github.com/kkyr/go-recipe/internal/scraper/custom"
 	"github.com/kkyr/go-recipe/internal/scraper/test"
+
+	"github.com/kkyr/assert"
 )
 
 func TestNew{{.domain}}Scraper(t *testing.T) {
 	doc := test.ReadHTMLFileOrFail(t, custom.{{.domain}}Host)
 
 	scraper, err := custom.New{{.domain}}Scraper(doc)
-	if err != nil {
-		t.Fatalf("unexpected err while initializing scraper: %v", err)
-	}
+	assert.New(t).Require().Nil(err)
 
 	scraperTest := test.Scraper{
 		Author:        {{.author}},

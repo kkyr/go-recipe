@@ -15,6 +15,9 @@ linters:
 
 issues:
   exclude-rules:
+    - path: internal/scraper/custom/
+      linters:
+        - dupl
     - path: internal/scraper/test/scraper.go
       linters:
         - funlen

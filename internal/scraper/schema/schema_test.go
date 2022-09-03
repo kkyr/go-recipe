@@ -10,19 +10,19 @@ import (
 	"github.com/kkyr/go-recipe/internal/scraper/test"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/kkyr/assert"
 )
 
 func TestNewRecipeScraper(t *testing.T) {
+	require := assert.New(t).Require()
+
 	file, err := os.Open("testdata/json-ld-schema.html")
-	if err != nil {
-		t.Fatalf("unexpected err while opening file: %v", err)
-	}
+	require.Nil(err)
+
 	defer file.Close()
 
 	doc, err := goquery.NewDocumentFromReader(file)
-	if err != nil {
-		t.Fatalf("unexpected err while reading file: %v", err)
-	}
+	require.Nil(err)
 
 	scraperTest := test.Scraper{
 		Author:       "Sara Buenfeld",
@@ -56,9 +56,7 @@ func TestNewRecipeScraper(t *testing.T) {
 	}
 
 	scraper, err := schema.NewRecipeScraper(doc)
-	if err != nil {
-		t.Fatalf("unexpected err while initializing scraper: %v", err)
-	}
+	require.Nil(err)
 
 	scraperTest.Run(t, scraper)
 }

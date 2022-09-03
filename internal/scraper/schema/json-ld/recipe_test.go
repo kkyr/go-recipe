@@ -10,10 +10,11 @@ import (
 	ld "github.com/kkyr/go-recipe/internal/scraper/schema/json-ld"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/kkyr/assert"
 )
 
 func TestRecipeProcessor_GetRecipeNode(t *testing.T) {
-	rp := ld.NewRecipeProcessor()
+	require := assert.New(t).Require()
 
 	for _, tc := range []struct {
 		name string
@@ -23,37 +24,29 @@ func TestRecipeProcessor_GetRecipeNode(t *testing.T) {
 		{name: "parses node", file: "json-ld-schema-node.html"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
+			rp := ld.NewRecipeProcessor()
+
 			b, err := os.ReadFile(fmt.Sprintf("testdata/%s", tc.file))
-			if err != nil {
-				t.Fatalf("unexpected err while reading file: %v", err)
-			}
+			require.Nil(err)
 
 			doc, err := goquery.NewDocumentFromReader(bytes.NewReader(b))
-			if err != nil {
-				t.Fatalf("unexpected err while creating doc: %v", err)
-			}
+			require.Nil(err)
 
 			data, err := rp.GetRecipeNode(doc)
-			if err != nil {
-				t.Fatalf("unexpected err while parsing: %v", err)
-			}
+			require.Nil(err)
 
-			if data["type"] != "Recipe" {
-				t.Errorf("want type Recipe, got %v", data["type"])
-			}
+			require.Field("type").Equal("Recipe", data["type"])
 		})
 	}
 
 	t.Run("returns err when no ld+json in doc", func(t *testing.T) {
+		rp := ld.NewRecipeProcessor()
+
 		const html = `<html><head><script></script></head></html>`
 		doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
-		if err != nil {
-			t.Fatalf("unexpected err while creating doc: %v", err)
-		}
+		require.Nil(err)
 
 		_, err = rp.GetRecipeNode(doc)
-		if err == nil {
-			t.Fatalf("expected err, got nil")
-		}
+		require.NotNil(err)
 	})
 }

@@ -1,13 +1,14 @@
 package recipe
 
 import (
-	"errors"
 	"fmt"
 	"testing"
 
 	"github.com/kkyr/go-recipe/internal/scraper/custom"
 	"github.com/kkyr/go-recipe/internal/scraper/schema"
 	"github.com/kkyr/go-recipe/internal/scraper/test"
+
+	"github.com/kkyr/assert"
 )
 
 type mockHTTPClient struct {
@@ -31,6 +32,8 @@ const htmlSchemaRecipe = `<html>
 </html>`
 
 func TestScrapeFrom(t *testing.T) {
+	assert := assert.New(t)
+
 	client = &mockHTTPClient{
 		GetFunc: func(url string) ([]byte, error) {
 			return []byte(htmlSchemaRecipe), nil
@@ -39,9 +42,7 @@ func TestScrapeFrom(t *testing.T) {
 
 	t.Run("using custom scraper", func(t *testing.T) {
 		scraper, err := ScrapeFrom(custom.MinimalistBakerHost)
-		if err != nil {
-			t.Fatalf("unexpected err when getting scraper: %v", err)
-		}
+		assert.Require().Nil(err)
 
 		if _, ok := scraper.(*custom.MinimalistBakerScraper); !ok {
 			t.Errorf("want type *custom.MinimalistBakerScraper, got %T", scraper)
@@ -54,9 +55,7 @@ func TestScrapeFrom(t *testing.T) {
 
 	t.Run("using default scraper", func(t *testing.T) {
 		scraper, err := ScrapeFrom("")
-		if err != nil {
-			t.Fatalf("unexpected err when getting scraper: %v", err)
-		}
+		assert.Require().Nil(err)
 
 		if _, ok := scraper.(*schema.RecipeScraper); !ok {
 			t.Errorf("want type *schema.RecipeScraper, got %T", scraper)
@@ -69,6 +68,8 @@ func TestScrapeFrom(t *testing.T) {
 }
 
 func TestScrapeFrom_Err(t *testing.T) {
+	assert := assert.New(t)
+
 	t.Run("using bad document", func(t *testing.T) {
 		client = &mockHTTPClient{
 			GetFunc: func(url string) ([]byte, error) {
@@ -77,9 +78,7 @@ func TestScrapeFrom_Err(t *testing.T) {
 		}
 
 		_, err := ScrapeFrom("")
-		if err == nil {
-			t.Fatalf("want err, got nil")
-		}
+		assert.NotNil(err)
 	})
 
 	t.Run("bad request", func(t *testing.T) {
@@ -92,8 +91,6 @@ func TestScrapeFrom_Err(t *testing.T) {
 		}
 
 		_, err := ScrapeFrom("")
-		if !errors.Is(err, boom) {
-			t.Fatalf("want %v, got %v", boom, err)
-		}
+		assert.ErrorIs(err, boom)
 	})
 }

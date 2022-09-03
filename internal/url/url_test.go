@@ -4,9 +4,13 @@ import (
 	"testing"
 
 	"github.com/kkyr/go-recipe/internal/url"
+
+	"github.com/kkyr/assert"
 )
 
 func TestGetHost(t *testing.T) {
+	assert := assert.New(t)
+
 	for _, tc := range []struct {
 		in   string
 		want string
@@ -57,9 +61,7 @@ func TestGetHost(t *testing.T) {
 		},
 	} {
 		t.Run(tc.in, func(t *testing.T) {
-			if got := url.GetHost(tc.in); tc.want != got {
-				t.Errorf("want %q, got %q", tc.want, got)
-			}
+			assert.Equal(tc.want, url.GetHost(tc.in))
 		})
 	}
 }

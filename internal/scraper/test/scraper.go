@@ -10,7 +10,7 @@ import (
 	"github.com/kkyr/go-recipe"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/google/go-cmp/cmp"
+	"github.com/kkyr/assert"
 )
 
 // Scraper is a struct that helps test packages to test values returned by a recipe.Scraper.
@@ -137,14 +137,12 @@ func (s *Scraper) Run(t *testing.T, scraper recipe.Scraper) {
 func Verify(t *testing.T, wantOK bool, gotOK bool, wantVal any, gotVal any) {
 	t.Helper()
 
-	if wantOK != gotOK {
-		t.Errorf("want ok = %t, got %t", wantOK, gotOK)
-	}
+	assert := assert.New(t)
+
+	assert.Equal(wantOK, gotOK)
 
 	if gotOK {
-		if diff := cmp.Diff(wantVal, gotVal); diff != "" {
-			t.Errorf("(-want +got):\n%v", diff)
-		}
+		assert.Equal(wantVal, gotVal)
 	}
 }
 
@@ -155,16 +153,15 @@ func Verify(t *testing.T, wantOK bool, gotOK bool, wantVal any, gotVal any) {
 func ReadHTMLFileOrFail(t *testing.T, host string) *goquery.Document {
 	t.Helper()
 
+	assert := assert.New(t)
+
 	file, err := os.Open(fmt.Sprintf("testdata/%s.html", host))
-	if err != nil {
-		t.Fatalf("unexpected err while opening file: %v", err)
-	}
+	assert.Require().Nil(err)
+
 	defer file.Close()
 
 	doc, err := goquery.NewDocumentFromReader(file)
-	if err != nil {
-		t.Fatalf("unexpected err while reading file: %v", err)
-	}
+	assert.Nil(err)
 
 	return doc
 }
