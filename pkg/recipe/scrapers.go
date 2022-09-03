@@ -1,14 +1,15 @@
 package recipe
 
 import (
-	"github.com/PuerkitoBio/goquery"
 	"github.com/kkyr/go-recipe"
-	custom2 "github.com/kkyr/go-recipe/internal/html/scrape/custom"
+	"github.com/kkyr/go-recipe/internal/html/scrape/custom"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 type recipeScraperFunc func(*goquery.Document) (recipe.Scraper, error)
 
 var hostToScraper = map[string]recipeScraperFunc{
-	custom2.ForksOverKnivesHost: custom2.NewForksOverKnivesScraper,
-	custom2.MinimalistBakerHost: custom2.NewMinimalistBakerScraper,
+	custom.ForksOverKnivesHost: custom.NewForksOverKnivesScraper,
+	custom.MinimalistBakerHost: custom.NewMinimalistBakerScraper,
 }
