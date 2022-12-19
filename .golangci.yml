@@ -7,6 +7,7 @@ linters:
     - gochecknoglobals
     - goerr113
     - gofumpt
+    - interfacebloat
     - ireturn
     - nlreturn
     - noctx

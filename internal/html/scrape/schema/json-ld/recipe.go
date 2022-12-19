@@ -9,9 +9,13 @@ import (
 )
 
 const (
-	graphKey       = "@graph"
-	typeKey        = "@type"
-	recipeType     = "Recipe"
+	contextKey = "@context"
+	graphKey   = "@graph"
+	typeKey    = "@type"
+
+	recipeType = "Recipe"
+	schemaURL  = "http://schema.org/"
+
 	jsonLdSelector = `script[type="application/ld+json"]`
 )
 
@@ -21,8 +25,8 @@ func NewRecipeProcessor() *RecipeProcessor {
 		proc: ld.NewJsonLdProcessor(),
 		opts: ld.NewJsonLdOptions(""),
 		ctx: map[string]any{
-			"@context": "http://schema.org/",
-			"@type":    "Recipe",
+			contextKey: schemaURL,
+			typeKey:    recipeType,
 		},
 	}
 }
@@ -77,6 +81,8 @@ func (rp *RecipeProcessor) parseJSON(data string) (map[string]any, error) {
 		return nil, fmt.Errorf("could not find Recipe node")
 	}
 
+	addSchemaCtx(recipeNode)
+
 	recipeNode, err := rp.proc.Compact(recipeNode, rp.ctx, rp.opts)
 	if err != nil {
 		return nil, fmt.Errorf("could not compact Recipe node: %w", err)
@@ -90,6 +96,15 @@ func isGraphNode(v any) bool {
 	_, containsGraph := vMap[graphKey]
 
 	return isMap && containsGraph
+}
+
+func addSchemaCtx(v any) {
+	vMap, isMap := v.(map[string]any)
+	_, containsCtx := vMap[contextKey]
+
+	if isMap && !containsCtx {
+		vMap[contextKey] = schemaURL
+	}
 }
 
 func findRecipeNode(nodes []any) (map[string]any, bool) {
