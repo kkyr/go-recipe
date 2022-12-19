@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 	"testing"
-	
+
 	ld "github.com/kkyr/go-recipe/internal/html/scrape/schema/json-ld"
 
 	"github.com/PuerkitoBio/goquery"
