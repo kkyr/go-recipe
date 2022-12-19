@@ -10,6 +10,7 @@ import (
 type recipeScraperFunc func(*goquery.Document) (recipe.Scraper, error)
 
 var hostToScraper = map[string]recipeScraperFunc{
-	custom.ForksOverKnivesHost: custom.NewForksOverKnivesScraper,
-	custom.MinimalistBakerHost: custom.NewMinimalistBakerScraper,
+	custom.ForksOverKnivesHost:    custom.NewForksOverKnivesScraper,
+	custom.LoveAndOtherSpicesHost: custom.NewLoveAndOtherSpicesScraper,
+	custom.MinimalistBakerHost:    custom.NewMinimalistBakerScraper,
 }
