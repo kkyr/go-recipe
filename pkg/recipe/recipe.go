@@ -3,6 +3,7 @@ package recipe
 import (
 	"bytes"
 	"fmt"
+	"io"
 
 	"github.com/kkyr/go-recipe"
 	"github.com/kkyr/go-recipe/internal/html/scrape/schema"
@@ -26,7 +27,12 @@ func ScrapeFrom(urlStr string) (recipe.Scraper, error) {
 		return nil, fmt.Errorf("unable to GET url: %w", err)
 	}
 
-	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(body))
+	return ScrapeHTML(urlStr, bytes.NewReader(body))
+}
+
+// ScrapeHTML returns a Scraper that scrapes recipe data from the provided HTML.
+func ScrapeHTML(urlStr string, body io.Reader) (recipe.Scraper, error) {
+	doc, err := goquery.NewDocumentFromReader(body)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse HTML document: %w", err)
 	}
