@@ -28,12 +28,12 @@ import "github.com/kkyr/go-recipe/pkg/recipe"
 func main() {
   url := "https://minimalistbaker.com/quick-pickled-jalapenos/"
 
-  recipe, err := recipe.ScrapeFrom(url)
-  if err != nil { 
+  recipe, err := recipe.ScrapeURL(url)
+  if err != nil {
       // handle err
   }
-  
-  ingredients, ok := recipe.Ingredients() 
+
+  ingredients, ok := recipe.Ingredients()
   instructions, ok := recipe.Instructions()
   // ... & more fields available
 }
@@ -53,7 +53,7 @@ Contributions are welcome! You can contribute in a few ways: by adding a custom 
 
 ### Custom scrapers
 
-Creating a custom scraper is easy as pie thanks to the code generator that's included in this package. 
+Creating a custom scraper is easy as pie thanks to the code generator that's included in this package.
 
 The generator requires two arguments: a link to a recipe on a website and the domain of the website that the recipe is hosted on. The domain is used to generate the source code (particularly the file and struct names), and the link is used to scrape recipe data, which is then used to generate a fully functioning unit test. If the generator is unable to scrape recipe data (which can happen if the website does not contain a Schema Recipe), a test will still be generated but test assertions will be made against empty fields.
 

@@ -15,7 +15,7 @@
 //	func main() {
 //	  url := "https://minimalistbaker.com/quick-pickled-jalapenos/"
 //
-//	  recipe, err := recipe.ScrapeFrom(url)
+//	  recipe, err := recipe.ScrapeURL(url)
 //	  if err != nil {
 //		// handle err
 //	  }

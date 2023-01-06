@@ -31,7 +31,7 @@ const htmlSchemaRecipe = `<html>
     </head>
 </html>`
 
-func TestScrapeFrom(t *testing.T) {
+func TestScrapeURL(t *testing.T) {
 	assert := assert.New(t)
 
 	client = &mockHTTPClient{
@@ -41,7 +41,7 @@ func TestScrapeFrom(t *testing.T) {
 	}
 
 	t.Run("using custom scraper", func(t *testing.T) {
-		scraper, err := ScrapeFrom(custom.MinimalistBakerHost)
+		scraper, err := ScrapeURL(custom.MinimalistBakerHost)
 		assert.Require().Nil(err)
 
 		if _, ok := scraper.(*custom.MinimalistBakerScraper); !ok {
@@ -54,7 +54,7 @@ func TestScrapeFrom(t *testing.T) {
 	})
 
 	t.Run("using default scraper", func(t *testing.T) {
-		scraper, err := ScrapeFrom("")
+		scraper, err := ScrapeURL("")
 		assert.Require().Nil(err)
 
 		if _, ok := scraper.(*schema.RecipeScraper); !ok {
@@ -67,7 +67,7 @@ func TestScrapeFrom(t *testing.T) {
 	})
 }
 
-func TestScrapeFrom_Err(t *testing.T) {
+func TestScrapeURL_Err(t *testing.T) {
 	assert := assert.New(t)
 
 	t.Run("using bad document", func(t *testing.T) {
@@ -77,7 +77,7 @@ func TestScrapeFrom_Err(t *testing.T) {
 			},
 		}
 
-		_, err := ScrapeFrom("")
+		_, err := ScrapeURL("")
 		assert.NotNil(err)
 	})
 
@@ -90,7 +90,7 @@ func TestScrapeFrom_Err(t *testing.T) {
 			},
 		}
 
-		_, err := ScrapeFrom("")
+		_, err := ScrapeURL("")
 		assert.ErrorIs(err, boom)
 	})
 }
