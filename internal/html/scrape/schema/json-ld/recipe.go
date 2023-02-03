@@ -56,14 +56,10 @@ func (rp *RecipeProcessor) GetRecipeNode(doc *goquery.Document) (map[string]any,
 	)
 
 	for _, doc := range jsonLdDocs {
-		// Some websites (e.x. AllRecipes.com) have their schema wrapped in a list
+		// Some websites (e.g. AllRecipes.com) have their schema wrapped in a list
 		doc = strings.TrimSpace(doc)
-		if strings.HasPrefix(doc, "[") {
-			doc, _ = strings.CutPrefix(doc, "[")
-		}
-		if strings.HasSuffix(doc, "]") {
-			doc, _ = strings.CutSuffix(doc, "]")
-		}
+		doc = strings.TrimPrefix(doc, "[")
+		doc = strings.TrimSuffix(doc, "]")
 
 		if node, err = rp.parseJSON(doc); err == nil {
 			return node, nil
