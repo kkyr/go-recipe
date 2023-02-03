@@ -3,6 +3,7 @@ package ld
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/piprate/json-gold/ld"
@@ -55,6 +56,15 @@ func (rp *RecipeProcessor) GetRecipeNode(doc *goquery.Document) (map[string]any,
 	)
 
 	for _, doc := range jsonLdDocs {
+		// Some websites (e.x. AllRecipes.com) have their schema wrapped in a list
+		doc = strings.TrimSpace(doc)
+		if strings.HasPrefix(doc, "[") {
+			doc, _ = strings.CutPrefix(doc, "[")
+		}
+		if strings.HasSuffix(doc, "]") {
+			doc, _ = strings.CutSuffix(doc, "]")
+		}
+
 		if node, err = rp.parseJSON(doc); err == nil {
 			return node, nil
 		}
@@ -110,8 +120,16 @@ func addSchemaCtx(v any) {
 func findRecipeNode(nodes []any) (map[string]any, bool) {
 	for _, node := range nodes {
 		if m, ok := node.(map[string]any); ok {
-			if m[typeKey] == recipeType {
-				return m, true
+			if t, ok := m[typeKey].(string); ok {
+				if t == recipeType {
+					return m, true
+				}
+			} else if t, ok := m[typeKey].([]interface{}); ok {
+				for _, v := range t {
+					if v == recipeType {
+						return m, true
+					}
+				}
 			}
 		}
 	}
