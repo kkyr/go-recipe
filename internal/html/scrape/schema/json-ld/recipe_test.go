@@ -21,6 +21,7 @@ func TestRecipeProcessor_GetRecipeNode(t *testing.T) {
 		{name: "parses graph", file: "json-ld-schema-graph.html"},
 		{name: "parses graph with no schema", file: "json-ld-schema-graph-no-schema.html"},
 		{name: "parses node", file: "json-ld-schema-node.html"},
+		{name: "parses graph with array and whitespace", file: "json-ld-schema-as-array-type-array-whitespace.html"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			require := assert.New(t).Require()
