@@ -2,6 +2,7 @@ package ld
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/PuerkitoBio/goquery"
@@ -55,11 +56,6 @@ func (rp *RecipeProcessor) GetRecipeNode(doc *goquery.Document) (map[string]any,
 	)
 
 	for _, doc := range jsonLdDocs {
-		// Some websites (e.g. AllRecipes.com) have their schema wrapped in a list
-		// doc = strings.TrimSpace(doc)
-		// doc = strings.TrimPrefix(doc, "[")
-		// doc = strings.TrimSuffix(doc, "]")
-
 		if node, err = rp.parseJSON(doc); err == nil {
 			return node, nil
 		}
@@ -104,9 +100,11 @@ func unmarshalJSONObjectOrArray(data string) (map[string]any, error) {
 
 	var nodes []any
 	if err := json.Unmarshal([]byte(data), &nodes); err != nil {
-		if e, ok := err.(*json.SyntaxError); ok {
-			return nil, fmt.Errorf("unmarshal as array failed at byte offset %d", e.Offset)
+		var syntaxError *json.SyntaxError
+		if errors.As(err, &syntaxError) {
+			return nil, fmt.Errorf("unmarshal as array failed at byte offset %d", syntaxError.Offset)
 		}
+
 		return nil, fmt.Errorf("unmarshal as array failed: %w", err)
 	}
 
@@ -142,14 +140,11 @@ func findRecipeNode(nodes []any) (map[string]any, bool) {
 			if err != nil {
 				return nil, false
 			}
-			if arr != nil {
-				if ArrayContains(arr, recipeType) {
-					return m, true
-				}
-			} else {
-				if str == recipeType {
-					return m, true
-				}
+
+			if arr != nil && ArrayContains(arr, recipeType) {
+				return m, true
+			} else if str != "" && str == recipeType {
+				return m, true
 			}
 		}
 	}
@@ -173,5 +168,6 @@ func ArrayContains(array []any, other string) bool {
 			return true
 		}
 	}
+
 	return false
 }
