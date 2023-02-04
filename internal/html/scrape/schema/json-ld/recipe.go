@@ -3,7 +3,6 @@ package ld
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/piprate/json-gold/ld"
@@ -57,9 +56,9 @@ func (rp *RecipeProcessor) GetRecipeNode(doc *goquery.Document) (map[string]any,
 
 	for _, doc := range jsonLdDocs {
 		// Some websites (e.g. AllRecipes.com) have their schema wrapped in a list
-		doc = strings.TrimSpace(doc)
-		doc = strings.TrimPrefix(doc, "[")
-		doc = strings.TrimSuffix(doc, "]")
+		// doc = strings.TrimSpace(doc)
+		// doc = strings.TrimPrefix(doc, "[")
+		// doc = strings.TrimSuffix(doc, "]")
 
 		if node, err = rp.parseJSON(doc); err == nil {
 			return node, nil
@@ -70,8 +69,8 @@ func (rp *RecipeProcessor) GetRecipeNode(doc *goquery.Document) (map[string]any,
 }
 
 func (rp *RecipeProcessor) parseJSON(data string) (map[string]any, error) {
-	var nodeMap map[string]any
-	if err := json.Unmarshal([]byte(data), &nodeMap); err != nil {
+	nodeMap, err := unmarshalJSONObjectOrArray(data)
+	if err != nil {
 		return nil, fmt.Errorf("unmarshal data failed: %w", err)
 	}
 
@@ -89,12 +88,35 @@ func (rp *RecipeProcessor) parseJSON(data string) (map[string]any, error) {
 
 	addSchemaCtx(recipeNode)
 
-	recipeNode, err := rp.proc.Compact(recipeNode, rp.ctx, rp.opts)
+	recipeNode, err = rp.proc.Compact(recipeNode, rp.ctx, rp.opts)
 	if err != nil {
 		return nil, fmt.Errorf("could not compact Recipe node: %w", err)
 	}
 
 	return recipeNode, nil
+}
+
+func unmarshalJSONObjectOrArray(data string) (map[string]any, error) {
+	var m map[string]any
+	if err := json.Unmarshal([]byte(data), &m); err == nil {
+		return m, nil
+	}
+
+	var nodes []any
+	if err := json.Unmarshal([]byte(data), &nodes); err != nil {
+		if e, ok := err.(*json.SyntaxError); ok {
+			return nil, fmt.Errorf("unmarshal as array failed at byte offset %d", e.Offset)
+		}
+		return nil, fmt.Errorf("unmarshal as array failed: %w", err)
+	}
+
+	for _, node := range nodes {
+		if m, ok := node.(map[string]any); ok {
+			return m, nil
+		}
+	}
+
+	return nil, fmt.Errorf("unable to unmarshal data")
 }
 
 func isGraphNode(v any) bool {
@@ -116,19 +138,40 @@ func addSchemaCtx(v any) {
 func findRecipeNode(nodes []any) (map[string]any, bool) {
 	for _, node := range nodes {
 		if m, ok := node.(map[string]any); ok {
-			if t, ok := m[typeKey].(string); ok {
-				if t == recipeType {
+			str, arr, err := ConvertToStringOrArray(m[typeKey])
+			if err != nil {
+				return nil, false
+			}
+			if arr != nil {
+				if ArrayContains(arr, recipeType) {
 					return m, true
 				}
-			} else if t, ok := m[typeKey].([]interface{}); ok {
-				for _, v := range t {
-					if v == recipeType {
-						return m, true
-					}
+			} else {
+				if str == recipeType {
+					return m, true
 				}
 			}
 		}
 	}
 
 	return nil, false
+}
+
+func ConvertToStringOrArray(data any) (string, []interface{}, error) {
+	if rt, ok := data.(string); ok {
+		return rt, nil, nil
+	} else if rt, ok := data.([]interface{}); ok {
+		return "", rt, nil
+	}
+
+	return "", nil, fmt.Errorf("can't convert to string or array")
+}
+
+func ArrayContains(array []any, other string) bool {
+	for _, v := range array {
+		if v == other {
+			return true
+		}
+	}
+	return false
 }

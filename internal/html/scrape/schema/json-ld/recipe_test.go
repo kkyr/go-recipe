@@ -21,7 +21,7 @@ func TestRecipeProcessor_GetRecipeNode(t *testing.T) {
 		{name: "parses graph", file: "json-ld-schema-graph.html"},
 		{name: "parses graph with no schema", file: "json-ld-schema-graph-no-schema.html"},
 		{name: "parses node", file: "json-ld-schema-node.html"},
-		{name: "parses graph with array and whitespace", file: "json-ld-schema-as-array-type-array-whitespace.html"},
+		{name: "parses graph with array", file: "json-ld-schema-as-array-type-array.html"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			require := assert.New(t).Require()
@@ -37,7 +37,15 @@ func TestRecipeProcessor_GetRecipeNode(t *testing.T) {
 			data, err := rp.GetRecipeNode(doc)
 			require.Nil(err)
 
-			require.Field("type").Equal("Recipe", data["type"])
+			recipeType := "Recipe"
+			str, arr, err := ld.ConvertToStringOrArray(data["type"])
+			require.Nil(err)
+			if arr != nil {
+				require.Field("type").Equal(true, ld.ArrayContains(arr, recipeType))
+			} else {
+				require.Field("type").Equal(str, recipeType)
+			}
+
 			require.Field("name").NotZero(data["name"])
 		})
 	}
