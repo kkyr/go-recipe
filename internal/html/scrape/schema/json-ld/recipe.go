@@ -102,7 +102,8 @@ func unmarshalJSONObjectOrArray(data string) (map[string]any, error) {
 	if err := json.Unmarshal([]byte(data), &nodes); err != nil {
 		var syntaxError *json.SyntaxError
 		if errors.As(err, &syntaxError) {
-			return nil, fmt.Errorf("unmarshal as array failed at byte offset %d", syntaxError.Offset)
+			return nil, fmt.Errorf("unmarshal as array failed at byte offset %d, because of: \"%w\"",
+				syntaxError.Offset, syntaxError)
 		}
 
 		return nil, fmt.Errorf("unmarshal as array failed: %w", err)
