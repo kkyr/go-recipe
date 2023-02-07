@@ -136,38 +136,17 @@ func addSchemaCtx(v any) {
 func findRecipeNode(nodes []any) (map[string]any, bool) {
 	for _, node := range nodes {
 		if m, ok := node.(map[string]any); ok {
-			str, arr, err := ConvertToStringOrArray(m[typeKey])
-			if err != nil {
-				return nil, false
-			}
-
-			if arr != nil && ArrayContains(arr, recipeType) {
+			if t, ok := m[typeKey].(string); ok && t == recipeType {
 				return m, true
-			} else if str != "" && str == recipeType {
-				return m, true
+			} else if t, ok := m[typeKey].([]interface{}); ok {
+				for _, v := range t {
+					if v == recipeType {
+						return m, true
+					}
+				}
 			}
 		}
 	}
 
 	return nil, false
-}
-
-func ConvertToStringOrArray(data any) (string, []interface{}, error) {
-	if rt, ok := data.(string); ok {
-		return rt, nil, nil
-	} else if rt, ok := data.([]interface{}); ok {
-		return "", rt, nil
-	}
-
-	return "", nil, fmt.Errorf("can't convert to string or array")
-}
-
-func ArrayContains(array []any, other string) bool {
-	for _, v := range array {
-		if v == other {
-			return true
-		}
-	}
-
-	return false
 }

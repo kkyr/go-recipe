@@ -38,12 +38,19 @@ func TestRecipeProcessor_GetRecipeNode(t *testing.T) {
 			require.Nil(err)
 
 			recipeType := "Recipe"
-			str, arr, err := ld.ConvertToStringOrArray(data["type"])
-			require.Nil(err)
-			if arr != nil {
-				require.Field("type").Equal(true, ld.ArrayContains(arr, recipeType))
+
+			if t, ok := data["type"].(string); ok {
+				require.Field("type").Equal(t, recipeType)
+			} else if t, ok := data["type"].([]interface{}); ok {
+				for _, v := range t {
+					if v == recipeType {
+						require.Equal(v, recipeType)
+						break
+					}
+					require.NotNil(nil)
+				}
 			} else {
-				require.Field("type").Equal(str, recipeType)
+				require.NotNil(nil)
 			}
 
 			require.Field("name").NotZero(data["name"])
