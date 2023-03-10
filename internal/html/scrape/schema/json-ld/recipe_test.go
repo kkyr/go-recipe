@@ -39,18 +39,12 @@ func TestRecipeProcessor_GetRecipeNode(t *testing.T) {
 
 			recipeType := "Recipe"
 
-			if t, ok := data["type"].(string); ok {
-				require.Field("type").Equal(t, recipeType)
-			} else if t, ok := data["type"].([]interface{}); ok {
-				for _, v := range t {
-					if v == recipeType {
-						require.Equal(v, recipeType)
-						break
-					}
-					require.NotNil(nil)
-				}
+			if typeData, ok := data["type"].(string); ok {
+				require.Field("type").Equal(typeData, recipeType)
+			} else if typeData, ok := data["type"].([]interface{}); ok {
+				require.Field("type[0]").Equal(typeData[0], recipeType)
 			} else {
-				require.NotNil(nil)
+				t.Fatal("type attribute not in expected shape")
 			}
 
 			require.Field("name").NotZero(data["name"])
@@ -63,6 +57,29 @@ func TestRecipeProcessor_GetRecipeNode(t *testing.T) {
 		rp := ld.NewRecipeProcessor()
 
 		const html = `<html><head><script></script></head></html>`
+		doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+		require.Nil(err)
+
+		_, err = rp.GetRecipeNode(doc)
+		require.NotNil(err)
+	})
+
+	t.Run("returns err when syntax error in json", func(t *testing.T) {
+		require := assert.New(t).Require()
+
+		rp := ld.NewRecipeProcessor()
+
+		const html = `<html>
+			<head>
+				<script type="application/ld+json">
+					{
+						"@type": "Recipe",
+						"
+					}
+				</script>
+			</head>
+		</html>
+		`
 		doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
 		require.Nil(err)
 
