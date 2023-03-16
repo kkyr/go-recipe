@@ -21,6 +21,7 @@ func TestRecipeProcessor_GetRecipeNode(t *testing.T) {
 		{name: "parses graph", file: "json-ld-schema-graph.html"},
 		{name: "parses graph with no schema", file: "json-ld-schema-graph-no-schema.html"},
 		{name: "parses node", file: "json-ld-schema-node.html"},
+		{name: "parses graph with array", file: "json-ld-schema-as-array-type-array.html"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			require := assert.New(t).Require()
@@ -36,7 +37,16 @@ func TestRecipeProcessor_GetRecipeNode(t *testing.T) {
 			data, err := rp.GetRecipeNode(doc)
 			require.Nil(err)
 
-			require.Field("type").Equal("Recipe", data["type"])
+			recipeType := "Recipe"
+
+			if typeData, ok := data["type"].(string); ok {
+				require.Field("type").Equal(typeData, recipeType)
+			} else if typeData, ok := data["type"].([]interface{}); ok {
+				require.Field("type[0]").Equal(typeData[0], recipeType)
+			} else {
+				t.Fatal("type attribute not in expected shape")
+			}
+
 			require.Field("name").NotZero(data["name"])
 		})
 	}
@@ -47,6 +57,29 @@ func TestRecipeProcessor_GetRecipeNode(t *testing.T) {
 		rp := ld.NewRecipeProcessor()
 
 		const html = `<html><head><script></script></head></html>`
+		doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+		require.Nil(err)
+
+		_, err = rp.GetRecipeNode(doc)
+		require.NotNil(err)
+	})
+
+	t.Run("returns err when syntax error in json", func(t *testing.T) {
+		require := assert.New(t).Require()
+
+		rp := ld.NewRecipeProcessor()
+
+		const html = `<html>
+			<head>
+				<script type="application/ld+json">
+					{
+						"@type": "Recipe",
+						"
+					}
+				</script>
+			</head>
+		</html>
+		`
 		doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
 		require.Nil(err)
 

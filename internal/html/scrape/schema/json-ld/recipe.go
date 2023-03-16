@@ -2,6 +2,7 @@ package ld
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/PuerkitoBio/goquery"
@@ -64,8 +65,8 @@ func (rp *RecipeProcessor) GetRecipeNode(doc *goquery.Document) (map[string]any,
 }
 
 func (rp *RecipeProcessor) parseJSON(data string) (map[string]any, error) {
-	var nodeMap map[string]any
-	if err := json.Unmarshal([]byte(data), &nodeMap); err != nil {
+	nodeMap, err := unmarshalJSONObjectOrArray(data)
+	if err != nil {
 		return nil, fmt.Errorf("unmarshal data failed: %w", err)
 	}
 
@@ -83,12 +84,38 @@ func (rp *RecipeProcessor) parseJSON(data string) (map[string]any, error) {
 
 	addSchemaCtx(recipeNode)
 
-	recipeNode, err := rp.proc.Compact(recipeNode, rp.ctx, rp.opts)
+	recipeNode, err = rp.proc.Compact(recipeNode, rp.ctx, rp.opts)
 	if err != nil {
 		return nil, fmt.Errorf("could not compact Recipe node: %w", err)
 	}
 
 	return recipeNode, nil
+}
+
+func unmarshalJSONObjectOrArray(data string) (map[string]any, error) {
+	var m map[string]any
+	if err := json.Unmarshal([]byte(data), &m); err == nil {
+		return m, nil
+	}
+
+	var nodes []any
+	if err := json.Unmarshal([]byte(data), &nodes); err != nil {
+		var syntaxError *json.SyntaxError
+		if errors.As(err, &syntaxError) {
+			return nil, fmt.Errorf("unmarshal as array failed at byte offset %d, because of: \"%w\"",
+				syntaxError.Offset, syntaxError)
+		}
+
+		return nil, fmt.Errorf("unmarshal as array failed: %w", err)
+	}
+
+	for _, node := range nodes {
+		if m, ok := node.(map[string]any); ok {
+			return m, nil
+		}
+	}
+
+	return nil, fmt.Errorf("unable to unmarshal data")
 }
 
 func isGraphNode(v any) bool {
@@ -110,8 +137,14 @@ func addSchemaCtx(v any) {
 func findRecipeNode(nodes []any) (map[string]any, bool) {
 	for _, node := range nodes {
 		if m, ok := node.(map[string]any); ok {
-			if m[typeKey] == recipeType {
+			if t, ok := m[typeKey].(string); ok && t == recipeType {
 				return m, true
+			} else if t, ok := m[typeKey].([]interface{}); ok {
+				for _, v := range t {
+					if v == recipeType {
+						return m, true
+					}
+				}
 			}
 		}
 	}
